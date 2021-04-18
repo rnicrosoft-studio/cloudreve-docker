@@ -26,8 +26,8 @@ RUN mkdir /go/src/github.com/cloudreve
 WORKDIR /go/src/github.com/cloudreve
 #RUN apk add --no-cache git
 RUN git clone --recurse-submodules https://github.com/cloudreve/Cloudreve.git \
-    && git checkout ${CLOUDREVE_VERSION}
-    && cd ./Cloudreve \
+    && git checkout ${CLOUDREVE_VERSION} \
+    && cd ./Cloudreve
 #COPY --from=fe-builder /assets/build/ /go/src/github.com/cloudreve/Cloudreve/v3/assets/build/
 COPY --from=fe-builder /assets/build/ /go/src/github.com/cloudreve/Cloudreve/assets/build/
 
