@@ -24,24 +24,24 @@ on:
 jobs:
   # Run tests.
   # See also https://docs.docker.com/docker-hub/builds/automated-testing/
-  test:
-    runs-on: ubuntu-latest
+#   test:
+#     runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v2
+#     steps:
+#       - uses: actions/checkout@v2
 
-      - name: Run tests
-        run: |
-          if [ -f docker-compose.test.yml ]; then
-            docker-compose --file docker-compose.test.yml build
-            docker-compose --file docker-compose.test.yml run sut
-          else
-            docker build . --file Dockerfile
-          fi
+#       - name: Run tests
+#         run: |
+#           if [ -f docker-compose.test.yml ]; then
+#             docker-compose --file docker-compose.test.yml build
+#             docker-compose --file docker-compose.test.yml run sut
+#           else
+#             docker build . --file Dockerfile
+#           fi
 
   build:
     # Ensure test job passes before pushing image.
-    needs: test
+#     needs: test
     
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
@@ -52,6 +52,20 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout
         uses: actions/checkout@v2
+        
+      - name: Docker meta
+        id: meta
+        run: |
+          DOCKER_IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/cloudreve
+          SHORTREF=${GITHUB_SHA::8}
+          TAGS="${DOCKER_IMAGE}:latest,${DOCKER_IMAGE}:${SHORTREF}"
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            VERSION=${GITHUB_REF##*/}
+            TAGS="$TAGS,${DOCKER_IMAGE}:${VERSION}"
+          fi
+          # set output for tags and docker image
+          echo ::set-output name=tags::${TAGS}
+          echo ::set-output name=docker_image::${DOCKER_IMAGE}
         
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -108,7 +122,7 @@ jobs:
           # List of SSH agent socket or keys to expose to the build
           #ssh: # optional
           # List of tags
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/cloudreve:latest,${{ secrets.DOCKERHUB_USERNAME }}/cloudreve:{{version}},${{ secrets.DOCKERHUB_USERNAME }}/cloudreve:{{major}}.{{minor}},${{ secrets.DOCKERHUB_USERNAME }}/cloudreve:{{major}} # optional
+          tags: ${{ steps.meta.outputs.tags }} # optional
           # Sets the target stage to build
           #target: # optional
           # GitHub Token used to authenticate against a repository for Git context
@@ -116,4 +130,11 @@ jobs:
           
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
+        
+      - name: Update repo description
+        uses: peter-evans/dockerhub-description@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          repository: ${{ steps.meta.outputs.docker_image }}
 
