@@ -40,7 +40,7 @@ RUN set -ex \
     && statik -src=assets/build/ -include=*.html,*.js,*.json,*.css,*.png,*.svg,*.ico -f \
     && go install -ldflags "-X 'github.com/cloudreve/Cloudreve/v3/pkg/conf.BackendVersion=${VERSION}' \
                             -X 'github.com/cloudreve/Cloudreve/v3/pkg/conf.LastCommit=${COMMIT_SHA}'\
-                            -w -s" && pwd && ls -l && ls -l /go/bin && ls -l /go/bin/cloudreve
+                            -w -s"
 
 # build final image
 FROM alpine:3.12 AS dist
@@ -54,7 +54,8 @@ ARG TZ="Asia/Shanghai"
 
 ENV TZ ${TZ}
 
-COPY --from=be-builder /go/bin/cloudreve /cloudreve/cloudreve
+#COPY --from=be-builder /go/bin/cloudreve /cloudreve/cloudreve
+COPY --from=be-builder /go/bin/Cloudreve /cloudreve/cloudreve
 
 RUN apk upgrade \
     && apk add bash tzdata \
