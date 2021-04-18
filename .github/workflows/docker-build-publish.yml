@@ -131,10 +131,10 @@ jobs:
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
         
-      - name: Update repo description
-        uses: peter-evans/dockerhub-description@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-          repository: ${{ steps.meta.outputs.docker_image }}
+#       - name: Update repo description
+#         uses: peter-evans/dockerhub-description@v2
+#         with:
+#           username: ${{ secrets.DOCKERHUB_USERNAME }}
+#           password: ${{ secrets.DOCKER_PASSWORD  }}
+#           repository: ${{ steps.meta.outputs.docker_image }}
 
