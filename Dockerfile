@@ -13,7 +13,7 @@ RUN git clone --recurse-submodules https://github.com/cloudreve/Cloudreve.git \
 # WORKDIR /assets
 
 # yarn repo connection is unstable, adjust the network timeout to 10 min.
-RUN set -ex \
+RUN set -ex && ls -l \
     && yarn install --network-timeout 600000 \
     && yarn run build
 
