@@ -4,16 +4,15 @@ ARG CLOUDREVE_VERSION="3.3.1"
 FROM node:lts-buster AS fe-builder
 
 # COPY ./assets /assets
-WORKDIR /
-RUN git clone --recurse-submodules https://github.com/cloudreve/Cloudreve.git \
-    && cd ./Cloudreve \
-    && git checkout ${CLOUDREVE_VERSION} \
-    && cd ./assets
+RUN git clone --recurse-submodules https://github.com/cloudreve/Cloudreve.git /Cloudreve \
+    && cd /Cloudreve \
+    && git checkout ${CLOUDREVE_VERSION}
 
 # WORKDIR /assets
+WORKDIR /Cloudreve/assets
 
 # yarn repo connection is unstable, adjust the network timeout to 10 min.
-RUN set -ex && ls -l \
+RUN set -ex \
     && yarn install --network-timeout 600000 \
     && yarn run build
 
@@ -23,16 +22,14 @@ FROM golang:1.15.1-alpine3.12 AS be-builder
 ENV GO111MODULE on
 
 #COPY . /go/src/github.com/cloudreve/Cloudreve/v3
-RUN mkdir /go/src/github.com/cloudreve
-WORKDIR /go/src/github.com/cloudreve
 #RUN apk add --no-cache git
-RUN git clone --recurse-submodules https://github.com/cloudreve/Cloudreve.git \
-    && cd ./Cloudreve \
+RUN git clone --recurse-submodules https://github.com/cloudreve/Cloudreve.git /go/src/github.com/cloudreve/Cloudreve/v3 \
+    && cd /go/src/github.com/cloudreve/Cloudreve/v3 \
     && git checkout ${CLOUDREVE_VERSION}
 #COPY --from=fe-builder /assets/build/ /go/src/github.com/cloudreve/Cloudreve/v3/assets/build/
-COPY --from=fe-builder /assets/build/ /go/src/github.com/cloudreve/Cloudreve/assets/build/
+COPY --from=fe-builder /Cloudreve/assets/build/ /go/src/github.com/cloudreve/Cloudreve/v3/assets/build/
 
-#WORKDIR /go/src/github.com/cloudreve/Cloudreve/v3
+WORKDIR /go/src/github.com/cloudreve/Cloudreve/v3
 
 RUN set -ex \
     && apk upgrade \
