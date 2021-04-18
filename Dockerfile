@@ -1,36 +1,3 @@
-#build stage
-FROM golang:alpine AS builder
-WORKDIR /go/src/app
-COPY ./go/src ../
-COPY ./USV_server/socket_server/socket_server.go .
-COPY ./USV_server/socket_server/ws_conn.go .
-COPY ./USV_server/socket_server/ws_hub.go .
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
-RUN apk add --no-cache git
-RUN go get -d -v ./... \
-    && go install -v ./...
-
-#final stage
-FROM alpine:latest
-RUN apk --no-cache add ca-certificates
-#set timezone
-RUN apk add tzdata && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
-    && echo "Asia/Shanghai" > /etc/timezone \
-    && apk del tzdata && date -R
-COPY --from=builder /go/bin/app /app
-ENTRYPOINT ./app
-ENV TCP_PORT 55555
-ENV WS_PORT 55556
-ENV DB_ADDR 127.0.0.1
-ENV DB_NAME database
-ENV DB_USER root
-ENV DB_PASS root
-LABEL Name=usv_socket_server Version=0.1.0
-
-====================
-
-
-
 ARG CLOUDREVE_VERSION="3.3.1"
 
 # build frontend
@@ -57,6 +24,7 @@ ENV GO111MODULE on
 #COPY . /go/src/github.com/cloudreve/Cloudreve/v3
 RUN mkdir /go/src/github.com/cloudreve
 WORKDIR /go/src/github.com/cloudreve
+#RUN apk add --no-cache git
 RUN git clone --recurse-submodules https://github.com/cloudreve/Cloudreve.git \
     && git checkout ${CLOUDREVE_VERSION}
     && cd ./Cloudreve \
@@ -79,7 +47,8 @@ RUN set -ex \
 # build final image
 FROM alpine:3.12 AS dist
 
-LABEL maintainer="mritd <mritd@linux.com>"
+#LABEL maintainer="mritd <mritd@linux.com>"
+LABEL Name=cloudreve Version=${CLOUDREVE_VERSION}
 
 # we use the Asia/Shanghai timezone by default, you can be modified
 # by `docker build --build-arg=TZ=Other_Timezone ...`
