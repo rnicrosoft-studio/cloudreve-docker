@@ -6,8 +6,9 @@ FROM node:lts-buster AS fe-builder
 # COPY ./assets /assets
 WORKDIR /
 RUN git clone --recurse-submodules https://github.com/cloudreve/Cloudreve.git \
+    && cd ./Cloudreve \
     && git checkout ${CLOUDREVE_VERSION} \
-    && cd ./Cloudreve/assets
+    && cd ./assets
 
 # WORKDIR /assets
 
@@ -26,8 +27,8 @@ RUN mkdir /go/src/github.com/cloudreve
 WORKDIR /go/src/github.com/cloudreve
 #RUN apk add --no-cache git
 RUN git clone --recurse-submodules https://github.com/cloudreve/Cloudreve.git \
-    && git checkout ${CLOUDREVE_VERSION} \
-    && cd ./Cloudreve
+    && cd ./Cloudreve \
+    && git checkout ${CLOUDREVE_VERSION}
 #COPY --from=fe-builder /assets/build/ /go/src/github.com/cloudreve/Cloudreve/v3/assets/build/
 COPY --from=fe-builder /assets/build/ /go/src/github.com/cloudreve/Cloudreve/assets/build/
 
