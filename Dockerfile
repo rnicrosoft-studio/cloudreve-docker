@@ -22,8 +22,8 @@ FROM golang:1.15.1-alpine3.12 AS be-builder
 ENV GO111MODULE on
 
 #COPY . /go/src/github.com/cloudreve/Cloudreve/v3
-#RUN apk add --no-cache git
-RUN git clone --recurse-submodules https://github.com/cloudreve/Cloudreve.git /go/src/github.com/cloudreve/Cloudreve/v3 \
+RUN apk add --no-cache git \
+    && git clone --recurse-submodules https://github.com/cloudreve/Cloudreve.git /go/src/github.com/cloudreve/Cloudreve/v3 \
     && cd /go/src/github.com/cloudreve/Cloudreve/v3 \
     && git checkout ${CLOUDREVE_VERSION}
 #COPY --from=fe-builder /assets/build/ /go/src/github.com/cloudreve/Cloudreve/v3/assets/build/
