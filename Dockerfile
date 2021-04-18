@@ -6,8 +6,8 @@ FROM node:lts-buster AS fe-builder
 # COPY ./assets /assets
 WORKDIR /
 RUN git clone --recurse-submodules https://github.com/cloudreve/Cloudreve.git \
-    && git checkout ${CLOUDREVE_VERSION}
-    && cd ./Cloudreve/assets \
+    && git checkout ${CLOUDREVE_VERSION} \
+    && cd ./Cloudreve/assets
 
 # WORKDIR /assets
 
