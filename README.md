@@ -1,4 +1,11 @@
 # cloudreve-docker
+
+![](https://img.shields.io/github/workflow/status/rnicrosoft-studio/cloudreve-docker/Build%20and%20push%20Docker%20images%20CI)
+![](https://img.shields.io/badge/cloudreve-3-brightgreen)
+![](https://img.shields.io/docker/image-size/rnicrosoft/cloudreve/latest)
+![](https://img.shields.io/docker/pulls/rnicrosoft/cloudreve)
+![](https://img.shields.io/badge/maintainer-rnicrosoft-blue)
+
 Dockerfile for Cloudreve V3. A trial to use `Github Action`.
 
 Inspired by [Cloudreve](https://github.com/cloudreve/Cloudreve/blob/master/Dockerfile) and [xavier-niu/cloudreve-docker](https://github.com/xavier-niu/cloudreve-docker)
