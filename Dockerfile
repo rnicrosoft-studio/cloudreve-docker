@@ -74,5 +74,5 @@ EXPOSE 5212/tcp
 #VOLUME /etc/cloudreve
 
 #VOLUME /data
-VOLUME /cloudreve
+
 ENTRYPOINT ["cloudreve"]
