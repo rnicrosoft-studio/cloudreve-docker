@@ -71,8 +71,8 @@ EXPOSE 5212/tcp
 # directory by default; users should mount the configfile to the `/etc/cloudreve`
 # directory by themselves for persistence considerations, and the data storage
 # directory recommends using `/data` directory.
-VOLUME /etc/cloudreve
+#VOLUME /etc/cloudreve
 
-VOLUME /data
-
+#VOLUME /data
+VOLUME /cloudreve
 ENTRYPOINT ["cloudreve"]
