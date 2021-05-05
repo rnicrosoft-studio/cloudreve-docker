@@ -1,8 +1,6 @@
-ENV CLOUDREVE_VERSION="3.3.1"
-
 # build frontend
 FROM node:lts-buster AS fe-builder
-
+ENV CLOUDREVE_VERSION="3.3.1"
 # COPY ./assets /assets
 RUN git clone --recurse-submodules https://github.com/cloudreve/Cloudreve.git /Cloudreve \
     && cd /Cloudreve \
